@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -58,6 +59,9 @@ namespace HealthCheck
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
+
+            //app.UseProxyToSpaDevelopmentServer("http://localhost:44314");
+
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
@@ -68,6 +72,7 @@ namespace HealthCheck
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
+                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(200);
                 }
             });
         }
