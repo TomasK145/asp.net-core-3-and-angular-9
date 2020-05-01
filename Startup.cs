@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -28,7 +29,9 @@ namespace HealthCheck
             });
 
             services.AddHealthChecks()
-                .AddCheck<ICMPHealthCheck>("ICMP");
+                .AddCheck("ICMP_01", new IcmpHealthCheck("www.ryadel.com", 100))
+                .AddCheck("ICMP_02", new IcmpHealthCheck("www.google.com", 100))
+                .AddCheck("ICMP_03", new IcmpHealthCheck("www.does-not-exist.com", 100));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +67,7 @@ namespace HealthCheck
 
             app.UseRouting();
 
-            app.UseHealthChecks("/hc");
+            app.UseHealthChecks("/hc", new CustomHealthCheckOptions());
 
             app.UseEndpoints(endpoints =>
             {
